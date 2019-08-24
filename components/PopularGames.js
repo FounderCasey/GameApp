@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Text,
   Image,
+  Button,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 export default class PopularGames extends Component {
@@ -49,11 +51,8 @@ export default class PopularGames extends Component {
 
         const getCovers = games.map(game => {
           if (game.cover) {
-            const coverUrl = `https://api-v3.igdb.com/covers/${
-              game.cover
-            }?fields=url`;
             return axios
-              .get(coverUrl, {
+              .get(`https://api-v3.igdb.com/covers/${game.cover}?fields=url`, {
                 headers: {
                   'user-key': '0e2dc2d39160d121e6c4357637248612',
                   Accept: 'application/json',
@@ -71,6 +70,8 @@ export default class PopularGames extends Component {
               );
           }
         });
+
+        console.log(games);
 
         Promise.all(getCovers).then(() => {
           this.setState(
@@ -96,7 +97,12 @@ export default class PopularGames extends Component {
           paddingLeft: 10,
           paddingRight: 10,
         }}>
-        <Text style={[styles.header, styles.colorWhite, {paddingBottom: 10}]}>
+        <Text
+          style={[
+            styles.header,
+            styles.colorWhite,
+            {paddingBottom: 10, paddingTop: 10},
+          ]}>
           Popular
         </Text>
         <FlatList
@@ -106,7 +112,7 @@ export default class PopularGames extends Component {
             <View style={{flex: 1, flexDirection: 'row'}}>
               <Image
                 style={{width: 100, height: 141, borderRadius: 2}}
-                source={{uri: item.cover}}
+                source={{url: item.cover}}
               />
               <View
                 style={{
@@ -120,7 +126,6 @@ export default class PopularGames extends Component {
                 <Text style={styles.colorWhite}>
                   ⭐ {Math.round(item.total_rating * 10) / 10}
                 </Text>
-                <Text>{item.genres}</Text>
               </View>
             </View>
           )}

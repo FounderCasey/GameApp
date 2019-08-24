@@ -1,22 +1,20 @@
 import React from 'react';
 import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
+import {
+  createStackNavigator,
+  createBottomTabNavigator,
+  createAppContainer,
+} from 'react-navigation';
 import PopularGames from './components/PopularGames';
 
 class PopularScreen extends React.Component {
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#252627'}}>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            marginTop: 50,
-          }}>
-          <View style={{flex: 1}}>
-            <PopularGames />
-          </View>
-        </SafeAreaView>
+        <View style={{flex: 1}}>
+          <PopularGames navigation={this.props.navigation} />
+        </View>
       </View>
     );
   }
@@ -41,6 +39,51 @@ class SearchScreen extends React.Component {
     );
   }
 }
+
+class DetailsScreen extends React.Component {
+  render() {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>Details!</Text>
+      </View>
+    );
+  }
+}
+
+const PopularStack = createStackNavigator({
+  Popular: {
+    screen: PopularScreen,
+    navigationOptions: ({navigation}) => ({
+      title: 'Popular',
+      headerTitleStyle: {
+        color: '#FFF9FB',
+      },
+      headerStyle: {
+        backgroundColor: '#252627',
+      },
+      headerTintColor: {
+        color: '#FFF9FB',
+      },
+    }),
+  },
+  Details: {screen: DetailsScreen},
+});
+
+const PulseStack = createStackNavigator({
+  Pulse: {screen: PulseScreen},
+  Details: {screen: DetailsScreen},
+});
+
+const SearchStack = createStackNavigator({
+  Search: {screen: SearchScreen},
+  Details: {screen: DetailsScreen},
+  defaultNavigationOptions: () => ({
+    title: 'B',
+    style: {
+      backgroundColor: '#252627',
+    },
+  }),
+});
 
 const getTabBarIcon = (navigation, focused, tintColor) => {
   const {routeName} = navigation.state;
@@ -67,9 +110,9 @@ const styles = StyleSheet.create({
 export default createAppContainer(
   createBottomTabNavigator(
     {
-      Popular: {screen: PopularScreen},
-      Pulse: {screen: PulseScreen},
-      Search: {screen: SearchScreen},
+      Popular: {screen: PopularStack},
+      Pulse: {screen: PulseStack},
+      Search: {screen: SearchStack},
     },
     {
       defaultNavigationOptions: ({navigation}) => ({
